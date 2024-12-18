@@ -1,4 +1,5 @@
-﻿using Announcement_Board_Front.Models.ViewModels;
+﻿using Announcement_Board_Front.Models;
+using Announcement_Board_Front.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -9,18 +10,7 @@ namespace Announcement_Board_Front.Pages.Announcements
         [BindProperty]
         public AddAnnouncement NewAnnouncement { get; set; } = new AddAnnouncement();
 
-        public List<string> Categories { get; set; } = new List<string>
-        {
-            "Побутова техніка", "Комп'ютерна техніка", "Смартфони", "Інше"
-        };
-
-        public Dictionary<string, List<string>> SubCategories { get; set; } = new Dictionary<string, List<string>>
-        {
-            { "Побутова техніка", new List<string> { "Холодильники", "Пральні машини", "Бойлери", "Печі", "Витяжки", "Мікрохвильові печі" }},
-            { "Комп'ютерна техніка", new List<string> { "ПК", "Ноутбуки", "Монітори", "Принтери", "Сканери" }},
-            { "Смартфони", new List<string> { "Android смартфони", "iOS/Apple смартфони" }},
-            { "Інше", new List<string> { "Одяг", "Взуття", "Аксесуари", "Спортивне обладнання", "Іграшки" }}
-        };
+        public Dictionary<string, List<string>> AllCategoriesWithSubCategories = AllCategories.AllCategoriesWithSubCategories;
 
         public List<string> AvailableSubCategories { get; set; } = new List<string>();
 

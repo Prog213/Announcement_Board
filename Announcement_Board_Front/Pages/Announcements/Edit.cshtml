@@ -36,7 +36,7 @@
             <label>Category</label>
             <select class="form-control" asp-for="Announcement.Category" id="categorySelect" onchange="updateSubCategories()">
                 <option value="" disabled selected>Select Category</option>
-                @foreach (var category in Model.Categories)
+                @foreach (var category in Model.AllCategoriesWithSubCategories.Keys)
                 {
                     <option value="@category">@category</option>
                 }
@@ -48,18 +48,22 @@
             <label>SubCategory</label>
             <select class="form-control" asp-for="Announcement.SubCategory" id="subCategorySelect">
                 <option value="" disabled selected>Select SubCategory</option>
+                @foreach (var subcategory in Model.AvailableSubCategories)
+                {
+                    <option value="@subcategory">@subcategory</option>
+                }
             </select>
             <span class="text-danger" asp-validation-for="Announcement.SubCategory"></span>
         </div>
 
         <button type="submit" class="btn btn-primary" name="submit">Submit</button>
-        @* <button class="btn btn-primary ml-2" asp-page="/Announcements/Display">Back</button> *@
+        <a class="btn btn-primary ml-2" asp-page="/Announcements/Display">Back</a>
     </form>
 </div>
 
 @section Scripts {
     <script>
-        const subCategories = @Html.Raw(Json.Serialize(Model.SubCategories));
+        const subCategories = @Html.Raw(Json.Serialize(Model.AllCategoriesWithSubCategories));
 
         function updateSubCategories() {
             const category = document.getElementById("categorySelect").value;

@@ -1,0 +1,74 @@
+﻿@page
+@model Announcement_Board_Front.Pages.Announcements.AddAnnouncementModel
+@{
+}
+
+<div class="container mt-3">
+    <h2>Add Announcement</h2>
+</div>
+<div class="container mt-3">
+    <form method="post">
+        <div class="form-group mb-3">
+            <label>Title</label>
+            <input type="text" class="form-control" placeholder="Enter title" asp-for="NewAnnouncement.Title">
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Description</label>
+            <textarea type="text" class="form-control" placeholder="Enter description" asp-for="NewAnnouncement.Description"></textarea>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Status</label>
+            <select class="form-control" asp-for="NewAnnouncement.Status">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Category</label>
+            <select class="form-control" asp-for="NewAnnouncement.Category" id="categorySelect" onchange="updateSubCategories()">
+                <option value="" disabled selected>Select Category</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category">@category</option>
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="NewAnnouncement.Category"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>SubCategory</label>
+            <select class="form-control" asp-for="NewAnnouncement.SubCategory" id="subCategorySelect">
+                <option value="" disabled selected>Select SubCategory</option>
+            </select>
+            <span class="text-danger" asp-validation-for="NewAnnouncement.SubCategory"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+        @* <button class="btn btn-primary ml-2" asp-page="/Announcements/Display">Back</button> *@
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        const subCategories = @Html.Raw(Json.Serialize(Model.SubCategories));
+
+        function updateSubCategories() {
+            const category = document.getElementById("categorySelect").value;
+            const subCategorySelect = document.getElementById("subCategorySelect");
+
+            subCategorySelect.innerHTML = '<option value="" disabled selected>Select SubCategory</option>';
+
+            if (category in subCategories) {
+                subCategories[category].forEach(sub => {
+                    const option = document.createElement("option");
+                    option.value = sub;
+                    option.textContent = sub;
+                    subCategorySelect.appendChild(option);
+                });
+            }
+        }
+    </script>
+}

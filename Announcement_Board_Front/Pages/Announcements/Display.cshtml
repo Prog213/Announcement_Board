@@ -7,6 +7,8 @@
     <h2>List of Announcements</h2>
 </div>
 
+<partial name="_Notification"></partial>
+
 <div class="container mt-3">
     <table class="table">
         <thead class="thead-dark">
@@ -34,7 +36,10 @@
                     <td>@announcement.CreatedDate.ToShortDateString()</td>
                     <td>
                         <a asp-page="/Announcements/Edit" asp-route-id="@announcement.Id" class="btn btn-primary btn-sm">Edit</a>
-                        <a asp-page="/Announcements/Delete" asp-route-id="@announcement.Id" class="btn btn-danger btn-sm">Delete</a>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@announcement.Id" class="d-inline">
+                            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                        </form>
+                        @* <a asp-page="/Announcements/Delete" asp-route-id="@announcement.Id" class="btn btn-danger btn-sm">Delete</a> *@
                     </td>
                 </tr>
             }

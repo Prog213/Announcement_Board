@@ -2,6 +2,7 @@
 using Announcement_Board_Front.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Text.Json;
 
 namespace Announcement_Board_Front.Pages.Announcements
 {
@@ -27,11 +28,23 @@ namespace Announcement_Board_Front.Pages.Announcements
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["Success"] = "Announcement successfully created!";
+                var notification = new Notification
+                {
+                    Message = "Announcement successfully created!",
+                    Type = NotificationType.Success
+                };
+
+                TempData["Notification"] = JsonSerializer.Serialize(notification);
+
                 return RedirectToPage("/Announcements/Display");
             }
 
-            ModelState.AddModelError(string.Empty, "Failed to create announcement. Try again later.");
+            ViewData["Notification"] = new Notification
+            {
+                Type = NotificationType.Error,
+                Message = "Something went wrong!"
+            };
+
             return Page();
 
         }

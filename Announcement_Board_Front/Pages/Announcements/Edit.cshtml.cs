@@ -2,8 +2,6 @@
 using Announcement_Board_Front.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
-using System.Net.Http;
 using System.Text.Json;
 
 namespace Announcement_Board_Front.Pages.Announcements
@@ -15,19 +13,12 @@ namespace Announcement_Board_Front.Pages.Announcements
 
         public Dictionary<string, List<string>> AllCategoriesWithSubCategories = AllCategories.AllCategoriesWithSubCategories;
 
-        public List<string> AvailableSubCategories { get; set; } = new List<string>();
-
         public async Task OnGetAsync(int id)
         {
             var client = httpClientFactory.CreateClient("AnnouncementsClient");
 
             Announcement = await client.GetFromJsonAsync<Announcement>($"Announcements/{id}")
                             ?? new Announcement();
-
-            if (!string.IsNullOrEmpty(Announcement.Category) && AllCategoriesWithSubCategories.ContainsKey(Announcement.Category))
-            {
-                AvailableSubCategories = AllCategoriesWithSubCategories[Announcement.Category];
-            }
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -53,8 +44,6 @@ namespace Announcement_Board_Front.Pages.Announcements
 
                 return RedirectToPage("/Announcements/Display");
             }
-
-            AvailableSubCategories = AllCategoriesWithSubCategories[Announcement.Category];
 
             ViewData["Notification"] = new Notification
             {

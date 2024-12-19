@@ -10,6 +10,37 @@
 <partial name="_Notification"></partial>
 
 <div class="container mt-3">
+    <form method="get">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label>Category</label>
+                <select class="form-control" asp-for="Category" id="categorySelect" name="Category" onchange="updateSubCategories()">
+                    <option value="" disabled selected>Select Category</option>
+                    @foreach (var category in Model.AllCategoriesWithSubCategories.Keys)
+                    {
+                        <option value="@category">@category</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label>SubCategory</label>
+                <select class="form-control" asp-for="SubCategory" id="subCategorySelect" name="SubCategory">
+                    <option value="" disabled selected>Select SubCategory</option>
+                    @if (Model.Category != null && Model.AllCategoriesWithSubCategories.ContainsKey(Model.Category))
+                    {
+                        @foreach (var subcategory in Model.AllCategoriesWithSubCategories[Model.Category])
+                        {
+                            <option value="@subcategory">@subcategory</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+
     <table class="table">
         <thead class="thead-dark">
             <tr>
@@ -39,10 +70,31 @@
                         <form method="post" asp-page-handler="Delete" asp-route-id="@announcement.Id" class="d-inline">
                             <button class="btn btn-danger btn-sm" type="submit">Delete</button>
                         </form>
-                        @* <a asp-page="/Announcements/Delete" asp-route-id="@announcement.Id" class="btn btn-danger btn-sm">Delete</a> *@
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <script>
+        const subCategories = @Html.Raw(Json.Serialize(Model.AllCategoriesWithSubCategories));
+
+        function updateSubCategories() {
+            const category = document.getElementById("categorySelect").value;
+            const subCategorySelect = document.getElementById("subCategorySelect");
+
+            subCategorySelect.innerHTML = '<option value="" disabled selected>Select SubCategory</option>';
+
+            if (category in subCategories) {
+                subCategories[category].forEach(sub => {
+                    const option = document.createElement("option");
+                    option.value = sub;
+                    option.textContent = sub;
+                    subCategorySelect.appendChild(option);
+                });
+            }
+        }
+    </script>
+}

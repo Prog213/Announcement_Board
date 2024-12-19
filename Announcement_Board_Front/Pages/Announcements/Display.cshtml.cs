@@ -1,18 +1,25 @@
+using Announcement_Board_Front.Models;
+using Announcement_Board_Front.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Announcement_Board_Front.Models;
-using System.Net.Http;
-using Announcement_Board_Front.Models.ViewModels;
 using System.Text.Json;
 
 namespace Announcement_Board_Front.Pages.Announcements
 {
     public class DisplayAnnouncementsModel(IHttpClientFactory httpClientFactory) : PageModel
     {
+        public Dictionary<string, List<string>> AllCategoriesWithSubCategories = AllCategories.AllCategoriesWithSubCategories;
         public List<Announcement> Announcements { get; set; } = new();
 
-        public async Task OnGetAsync()
+        [BindProperty(SupportsGet = true)]
+        public string? Category { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? SubCategory { get; set; }
+
+        public async Task OnGetAsync(string? Category, string? SubCategory)
         {
+
             var notificationJson = TempData["Notification"] as string;
             if (notificationJson != null)
             {
@@ -21,8 +28,8 @@ namespace Announcement_Board_Front.Pages.Announcements
 
             var client = httpClientFactory.CreateClient("AnnouncementsClient");
 
-            Announcements = await client.GetFromJsonAsync<List<Announcement>>("Announcements")
-                            ?? [];
+            Announcements = await client.GetFromJsonAsync<List<Announcement>>
+                ($"Announcements?Category={Category}&SubCategory={SubCategory}") ?? [];
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)

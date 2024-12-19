@@ -2,13 +2,14 @@ using System.Data;
 using Announcement_Board_API.DTOs;
 using Announcement_Board_API.Interfaces;
 using Announcement_Board_API.Models;
+using Announcement_Board_API.Params;
 using Dapper;
 
 namespace Announcement_Board_API.Repositories;
 
 public class AnnouncementRepository(IDbConnection context) : IAnnouncementRepository
 {
-    public async Task<bool> AddAnnouncement(CreateAnnouncementDto dto)
+    public async Task<int> AddAnnouncement(AnnouncementDto dto)
     {
         var parameters = new DynamicParameters();
         parameters.Add("Title", dto.Title);
@@ -17,10 +18,13 @@ public class AnnouncementRepository(IDbConnection context) : IAnnouncementReposi
         parameters.Add("Category", dto.Category);
         parameters.Add("SubCategory", dto.SubCategory);
 
-        var rowsAffected = await context.ExecuteAsync
-            ("InsertAnnouncement", parameters, commandType: CommandType.StoredProcedure);
-        
-        return rowsAffected > 0;
+        var createdAnnouncementId = await context.QuerySingleAsync<int>(
+            "InsertAnnouncement",
+            parameters,
+            commandType: CommandType.StoredProcedure
+        );
+
+        return createdAnnouncementId;
     }
 
     public async Task<bool> DeleteAnnouncement(int announcementId)
@@ -40,13 +44,16 @@ public class AnnouncementRepository(IDbConnection context) : IAnnouncementReposi
         );
     }
 
-    public async Task<IEnumerable<Announcement>> GetAnnouncements()
+    public async Task<IEnumerable<Announcement>> GetAnnouncements(FilterParams filterParams)
     {
+        var parameters = new DynamicParameters();
+        parameters.Add("Category", filterParams.Category);
+        parameters.Add("SubCategory", filterParams.SubCategory);
         return await context.QueryAsync<Announcement>
-            ("GetAllAnnouncements", commandType: CommandType.StoredProcedure);
+            ("GetAllAnnouncements", parameters, commandType: CommandType.StoredProcedure);
     }
 
-    public async Task<bool> UpdateAnnouncement(UpdateAnnouncementDto announcement, int announcementId)
+    public async Task<bool> UpdateAnnouncement(AnnouncementDto announcement, int announcementId)
     {
         var parameters = new DynamicParameters();
         parameters.Add("Id", announcementId);

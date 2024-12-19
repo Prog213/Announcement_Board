@@ -13,11 +13,13 @@
         <div class="form-group mb-3">
             <label>Title</label>
             <input type="text" class="form-control" placeholder="Enter title" asp-for="NewAnnouncement.Title">
+            <span class="text-danger" asp-validation-for="NewAnnouncement.Title"></span>
         </div>
 
         <div class="form-group mb-3">
             <label>Description</label>
             <textarea type="text" class="form-control" placeholder="Enter description" asp-for="NewAnnouncement.Description"></textarea>
+            <span class="text-danger" asp-validation-for="NewAnnouncement.Description"></span>
         </div>
 
         <div class="form-group mb-3">
@@ -26,6 +28,7 @@
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
             </select>
+            <span class="text-danger" asp-validation-for="NewAnnouncement.Status"></span>
         </div>
 
         <div class="form-group mb-3">
@@ -44,6 +47,13 @@
             <label>SubCategory</label>
             <select class="form-control" asp-for="NewAnnouncement.SubCategory" id="subCategorySelect">
                 <option value="" disabled selected>Select SubCategory</option>
+                @if (Model.NewAnnouncement.Category != null && Model.AllCategoriesWithSubCategories.ContainsKey(Model.NewAnnouncement.Category))
+                {
+                    @foreach (var subcategory in Model.AllCategoriesWithSubCategories[Model.NewAnnouncement.Category])
+                    {
+                        <option value="@subcategory">@subcategory</option>
+                    }
+                }
             </select>
             <span class="text-danger" asp-validation-for="NewAnnouncement.SubCategory"></span>
         </div>

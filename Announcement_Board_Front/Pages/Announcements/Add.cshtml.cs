@@ -13,8 +13,6 @@ namespace Announcement_Board_Front.Pages.Announcements
 
         public Dictionary<string, List<string>> AllCategoriesWithSubCategories = AllCategories.AllCategoriesWithSubCategories;
 
-        public List<string> AvailableSubCategories { get; set; } = new List<string>();
-
         public async Task<IActionResult> OnPostAsync()
         {
 

@@ -1,7 +1,8 @@
 ﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddRazorPagesOptions
+        (opt => opt.Conventions.AddPageRoute("/Announcements/Display",""));
 builder.Services.AddHttpClient("AnnouncementsClient", client =>
 {
     client.BaseAddress = new Uri("http://localhost:5088/api/");

@@ -3,9 +3,10 @@
 // Add services to the container.
 builder.Services.AddRazorPages().AddRazorPagesOptions
         (opt => opt.Conventions.AddPageRoute("/Announcements/Display",""));
+
 builder.Services.AddHttpClient("AnnouncementsClient", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5088/api/");
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseAddress"]!);
 });
 
 
